@@ -1,72 +1,69 @@
-const Kanji = require("../models/Kanji");
+const KanjiService = require("../services/kanjiService");
 
 exports.getKanji = async (req, res) => {
     try {
-        const kanjiList = await Kanji.find();
+        const kanjiList = await KanjiService.getAllKanji();
         res.status(200).json(kanjiList);
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
-}
+};
 
 exports.getKanjiById = async (req, res) => {
     try {
-        const kanji = await Kanji.findById(req.params.id);
-        if (!kanji) return res.status(404).json({ message: "Kanji not found!!!" });
+        const kanji = await KanjiService.getKanjiById(req.params.id);
+        if (!kanji) return res.status(404).json({ message: "Kanji not found!" });
         res.status(200).json(kanji);
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
-}
+};
 
 exports.getKanjiByJLPTLevel = async (req, res) => {
     try {
         const { level } = req.params;
-        const kanjiList = await Kanji.find({ jlptLevel: level });
+        const kanjiList = await KanjiService.getKanjiByJLPTLevel(level);
         res.status(200).json(kanjiList);
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
-}
+};
 
 exports.getKanjiByStrokeCount = async (req, res) => {
     try {
         const { strokeCount } = req.params;
-        const kanjiList = await Kanji.find({ strokes: strokeCount });
+        const kanjiList = await KanjiService.getKanjiByStrokeCount(strokeCount);
+        res.status(200).json(kanjiList);
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
-}
+};
 
 exports.createKanji = async (req, res) => {
     try {
-        const { kanji, onyomi, kunyomi, meaning, strokes, jlptLevel } = req.body;
-        const exists = await Kanji.findOne({ kanji });
-        if (exists) return res.status(400).json({ message: "Kanji already Exists!!!" });
-
-        const newKanji = await Kanji.create({ kanji, onyomi, kunyomi, meaning, strokes, jlptLevel });
+        const newKanji = await KanjiService.createKanji(req.body);
         res.status(201).json(newKanji);
     } catch (err) {
         res.status(400).json({ message: err.message });
     }
-}
+};
 
 exports.updateKanji = async (req, res) => {
     try {
-        const updateKanji = await Kanji.findByIdAndUpdate(req.params.id, req.body, {new: true});
-        if (!updateKanji) return res.status(404).json({ message: "Kanji not Found" });
-        res.status(200).json(updateKanji);
+        const updatedKanji = await KanjiService.updateKanji(req.params.id, req.body);
+        if (!updatedKanji) return res.status(404).json({ message: "Kanji not found!" });
+        res.status(200).json(updatedKanji);
     } catch (err) {
         res.status(400).json({ message: err.message });
     }
-}
+};
 
 exports.deleteKanji = async (req, res) => {
     try {
-        const deleteKanji = await Kanji.findByIdAndDelete(req.params.id);
-        if (!deleteKanji) return res.status(404).json({ message: "Kanji not Found" });
-        res.status(200).json({ message: "Kanji deleted Successfully!!!" });
+        const deletedKanji = await KanjiService.deleteKanji(req.params.id);
+        if (!deletedKanji) return res.status(404).json({ message: "Kanji not found!" });
+        res.status(200).json({ message: "Kanji deleted successfully!" });
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
-}
+};
