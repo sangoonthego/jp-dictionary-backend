@@ -25,7 +25,6 @@ connectDB();
 // mount routes
 app.use(helmet());
 app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 100 }));
-app.use(errorHandler);
 app.use("/api/auth", authRoutes);
 app.use("/api/words", wordRoutes);
 app.use("/api/kanji", kanjiRoutes);
@@ -33,6 +32,8 @@ app.use("/api/examples", exampleRoutes);
 app.use("/api/part-of-speech", partOfSpeechRoutes);
 app.use("/api/saved-words", savedWordRoutes);
 app.use("/api/word-views", wordViewRoutes);
+
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
