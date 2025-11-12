@@ -1,6 +1,5 @@
 const SavedWordService = require("../services/savedWordService");
 
-// Lấy danh sách từ đã lưu của user
 exports.getSavedWordByUser = async (req, res) => {
     try {
         const { userId } = req.params;
@@ -22,7 +21,6 @@ exports.saveWord = async (req, res) => {
     }
 };
 
-// Hủy lưu từ
 exports.unsavedWord = async (req, res) => {
     try {
         const { userId, wordId } = req.body;
