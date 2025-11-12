@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const savedWordController = require("../controllers/savedWordController");
 const { body, validationResult } = require("express-validator");
+const authMiddleware = require("../middlewares/authMiddleware");
 
 router.get("/user/:userId", savedWordController.getSavedWordByUser);
 

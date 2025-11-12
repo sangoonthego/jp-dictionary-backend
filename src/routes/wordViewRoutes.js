@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const wordViewController = require("../controllers/wordViewController");
 const { body, param, validationResult } = require("express-validator");
+const authMiddleware = require("../middlewares/authMiddleware");
+const authorizeRole = require("../middlewares/authorizeRole");
 
 router.get(
   "/:wordId",

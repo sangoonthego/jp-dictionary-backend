@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const kanjiController = require("../controllers/KanjiController");
 const { body, validationResult } = require("express-validator");
+const authMiddleware = require("../middlewares/authMiddleware");
+const authorizeRole = require("../middlewares/authorizeRole");
 
 router.get("/get", kanjiController.getKanji);
 router.get("/:id", kanjiController.getKanjiById);
@@ -10,6 +12,8 @@ router.get("/strokes/:strokeCount", kanjiController.getKanjiByStrokeCount);
 
 router.post(
   "/create",
+  authMiddleware, 
+  authorizeRole("Admin"),
   [
     body("kanji").notEmpty().withMessage("Kanji is required"),
     body("meaning").notEmpty().withMessage("Meaning is required"),
@@ -24,7 +28,7 @@ router.post(
   }
 );
 
-router.put("/:id", kanjiController.updateKanji);
-router.delete("/:id", kanjiController.deleteKanji);
+router.put("/:id", authMiddleware, authorizeRole("Admin"), kanjiController.updateKanji);
+router.delete("/:id", authMiddleware, authorizeRole("Admin"), kanjiController.deleteKanji);
 
 module.exports = router;
