@@ -41,6 +41,12 @@ class WordViewService {
 
         return wordView;
     }
+
+    static async getTopWordViews() {
+    return await WordView.find()
+        .sort({ viewCount: -1 })
+        .limit(12);
+    }
 }
 
 module.exports = WordViewService;
