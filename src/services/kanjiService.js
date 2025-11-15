@@ -1,4 +1,3 @@
-// services/kanjiService.js
 const Kanji = require("../models/Kanji");
 const { buildQueryOptions } = require("../helpers/queryHelper");
 const { validateJLPT, validateStrokes, checkDuplicateKanji } = require("../helpers/validationHelper");
@@ -7,7 +6,7 @@ const searchFields = ["kanji","onyomi","kunyomi","meaning"];
 
 class KanjiService {
   static async getKanji(queryParams) {
-    validateJLPT(queryParams.jlptLevel);
+    if (queryParams.jlptLevel) validateJLPT(queryParams.jlptLevel);
     if (queryParams.minStrokes) validateStrokes(queryParams.minStrokes);
     if (queryParams.maxStrokes) validateStrokes(queryParams.maxStrokes);
 
@@ -40,8 +39,8 @@ class KanjiService {
   static async createKanji(data) {
     const { kanji, strokes, jlptLevel } = data;
     if (!kanji || !data.meaning) throw new Error("Kanji and meaning are required");
-    validateStrokes(strokes);
-    validateJLPT(jlptLevel);
+    if (strokes) validateStrokes(strokes);
+    if (jlptLevel) validateJLPT(jlptLevel);
     await checkDuplicateKanji(kanji);
     const newKanji = new Kanji(data);
     return await newKanji.save();
@@ -49,8 +48,8 @@ class KanjiService {
 
   static async updateKanji(id, data) {
     const { kanji, strokes, jlptLevel } = data;
-    validateStrokes(strokes);
-    validateJLPT(jlptLevel);
+    if (strokes) validateStrokes(strokes);
+    if (jlptLevel) validateJLPT(jlptLevel);
     if (kanji) await checkDuplicateKanji(kanji, id);
     const updated = await Kanji.findByIdAndUpdate(id, data, { new: true, runValidators: true });
     if (!updated) throw new Error("Kanji not found");
@@ -61,6 +60,43 @@ class KanjiService {
     const deleted = await Kanji.findByIdAndDelete(id);
     if (!deleted) throw new Error("Kanji not found");
     return deleted;
+  }
+
+  static async bulkInsertKanji(kanjiArray) {
+    if (!Array.isArray(kanjiArray) || kanjiArray.length === 0) {
+      throw new Error("Input must be a non-empty array of Kanji");
+    }
+
+    const inserted = [];
+    const skipped = [];
+
+    for (const data of kanjiArray) {
+      try {
+        const { kanji, meaning, strokes, jlptLevel } = data;
+        if (!kanji || !meaning) throw new Error("Kanji and meaning are required");
+        if (strokes && (typeof strokes !== "number" || strokes <= 0)) throw new Error("Invalid strokes");
+        if (jlptLevel && !["N5","N4","N3","N2","N1"].includes(jlptLevel)) throw new Error("Invalid JLPT level");
+
+        const exists = await Kanji.findOne({ kanji });
+        if (exists) {
+          skipped.push(kanji);
+          continue;
+        }
+
+        const newKanji = new Kanji(data);
+        await newKanji.save();
+        inserted.push(kanji);
+      } catch (err) {
+        skipped.push(data.kanji || "Unknown");
+      }
+    }
+
+    return {
+      success: true,
+      inserted,
+      skipped,
+      message: `Inserted ${inserted.length} Kanji, skipped ${skipped.length} (duplicates or invalid)`
+    };
   }
 }
 
