@@ -29,3 +29,12 @@ exports.incrementViewCount = async (req, res) => {
         res.status(500).json({ message: err.message });
     }
 };
+
+exports.getTopWordViews = async (req, res) => {
+  try {
+    const result = await WordViewService.getTopWordViews();
+    return res.status(200).json(result);
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
+};

@@ -1,9 +1,37 @@
 const PartOfSpeechService = require("../services/partOfSpeechService");
 
-exports.getPartsOfSpeech = async (req, res) => {
+exports.fetchPartsOfSpeech = async (req, res) => {
     try {
-        const parts = await PartOfSpeechService.getAllPartsOfSpeech();
-        res.status(200).json(parts);
+        const list = await PartOfSpeechService.fetchPartsOfSpeechFromAPI();
+        res.status(200).json(list);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
+
+// exports.getPartsOfSpeech = async (req, res) => {
+//     try {
+//         const parts = await PartOfSpeechService.getAllPartsOfSpeech();
+//         res.status(200).json(parts);
+//     } catch (err) {
+//         res.status(500).json({ message: err.message });
+//     }
+// };
+
+exports.getAllPartsOfSpeech = async (req, res) => {
+    try {
+        const list = await PartOfSpeechService.getAllPartsOfSpeech();
+        res.status(200).json(list);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
+
+exports.getPartOfSpeechById = async (req, res) => {
+    try {
+        const pos = await PartOfSpeechService.getPartOfSpeechById(req.params.id);
+        if (!pos) return res.status(404).json({ message: "PartOfSpeech not found" });
+        res.status(200).json(pos);
     } catch (err) {
         res.status(500).json({ message: err.message });
     }

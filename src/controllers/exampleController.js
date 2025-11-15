@@ -48,7 +48,6 @@ exports.deleteExample = async (req, res) => {
     }
 };
 
-// Lấy examples theo WordId
 exports.getExamplesByWordId = async (req, res) => {
     try {
         const { wordId } = req.params;
