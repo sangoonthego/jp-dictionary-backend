@@ -15,12 +15,25 @@ exports.registerUser = async ({ username, email, password }) => {
     roleId: defaultRole._id,
   });
 
+  // create JWT
+  const token = jwt.sign(
+    { id: user._id, role: defaultRole.name },
+    process.env.JWT_SECRET,
+    { expiresIn: "7d" }
+  );
+
+  // return {
+  //   id: user._id,
+  //   username: user.username,
+  //   email: user.email,
+  //   roleId: user.roleId,
+  // };
+
   return {
-    id: user._id,
-    username: user.username,
-    email: user.email,
-    roleId: user.roleId,
-  };
+    success: true,
+    userId: user._id,
+    token,
+  }
 };
 
 exports.loginUser = async ({ email, password }) => {
