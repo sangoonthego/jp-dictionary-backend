@@ -1,4 +1,3 @@
-// controllers/kanjiController.js
 const KanjiService = require("../services/kanjiService");
 
 exports.getKanji = async (req, res) => {
@@ -60,6 +59,16 @@ exports.deleteKanji = async (req, res) => {
   try {
     await KanjiService.deleteKanji(req.params.id);
     res.json({ success: true, message: "Kanji deleted successfully" });
+  } catch (err) {
+    res.status(400).json({ success: false, message: err.message });
+  }
+};
+
+exports.bulkInsertKanji = async (req, res) => {
+  try {
+    const kanjiArray = req.body;
+    const result = await KanjiService.bulkInsertKanji(kanjiArray);
+    res.status(201).json({ success: true, insertedCount: result.length, data: result });
   } catch (err) {
     res.status(400).json({ success: false, message: err.message });
   }

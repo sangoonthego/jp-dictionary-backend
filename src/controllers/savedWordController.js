@@ -10,7 +10,6 @@ exports.getSavedWordByUser = async (req, res) => {
     }
 };
 
-// Lưu từ
 exports.saveWord = async (req, res) => {
     try {
         const { userId, wordId } = req.body;
