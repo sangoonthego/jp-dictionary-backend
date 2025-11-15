@@ -7,7 +7,7 @@ const authMiddleware = require("../middlewares/authMiddleware");
 router.get("/user/:userId", savedWordController.getSavedWordByUser);
 
 router.post(
-  "/save",
+  "/user/:userId/word/:wordId",
   [
     body("userId").notEmpty().withMessage("userId is required"),
     body("wordId").notEmpty().withMessage("wordId is required"),
@@ -20,6 +20,7 @@ router.post(
   }
 );
 
+router.delete("/user/:userId/word/:wordId", savedWordController.unsavedWord);
 router.delete("/", savedWordController.unsavedWord);
 
 module.exports = router;

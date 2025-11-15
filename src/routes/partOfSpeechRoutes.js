@@ -5,7 +5,9 @@ const { body, validationResult } = require("express-validator");
 const authMiddleware = require("../middlewares/authMiddleware");
 const authorizeRole = require("../middlewares/authorizeRole");
 
-router.get("/get", partOfSpeechController.getPartsOfSpeech);
+router.get("/fetch", partOfSpeechController.fetchPartsOfSpeech);
+router.get("/", partOfSpeechController.getAllPartsOfSpeech);
+router.get("/:id", partOfSpeechController.getPartOfSpeechById);
 
 router.post(
   "/create",
@@ -20,7 +22,16 @@ router.post(
   }
 );
 
-router.put("/:id", authMiddleware, authorizeRole("Admin"), partOfSpeechController.updatePartOfSpeech);
-router.delete("/:id", authMiddleware, authorizeRole("Admin"), partOfSpeechController.deletePartOfSpeech);
+router.put("/:id",
+  authMiddleware,
+  authorizeRole("Admin"),
+  partOfSpeechController.updatePartOfSpeech
+);
+
+router.delete("/:id",
+  authMiddleware,
+  authorizeRole("Admin"),
+  partOfSpeechController.deletePartOfSpeech
+);
 
 module.exports = router;

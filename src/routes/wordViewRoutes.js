@@ -16,6 +16,8 @@ router.get(
   }
 );
 
+router.get("/top", wordViewController.getTopWordViews);
+
 router.get(
   "/daily/:date",
   [param("date").notEmpty().withMessage("Date is required")],

@@ -5,7 +5,7 @@ const { body, validationResult } = require("express-validator");
 const authMiddleware = require("../middlewares/authMiddleware");
 const authorizeRole = require("../middlewares/authorizeRole");
 
-router.get("/get", kanjiController.getKanji);
+router.get("/", kanjiController.getKanji);
 router.get("/:id", kanjiController.getKanjiById);
 router.get("/jlpt/:level", kanjiController.getKanjiByJLPTLevel);
 router.get("/strokes/:strokeCount", kanjiController.getKanjiByStrokeCount);
