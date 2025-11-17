@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const connectDB = require("./config/db");
+const path = require("path");
 
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
@@ -13,12 +14,14 @@ const exampleRoutes = require("./routes/exampleRoutes");
 const partOfSpeechRoutes = require("./routes/partOfSpeechRoutes");
 const savedWordRoutes = require("./routes/savedWordRoutes");
 const wordViewRoutes = require("./routes/wordViewRoutes");
+const profileRoutes = require("./routes/profileRoutes");
 
 require("dotenv").config();
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 connectDB();
 
@@ -32,6 +35,8 @@ app.use("/api/examples", exampleRoutes);
 app.use("/api/part-of-speech", partOfSpeechRoutes);
 app.use("/api/saved-words", savedWordRoutes);
 app.use("/api/word-views", wordViewRoutes);
+app.use("/api/profile", profileRoutes);
+app.use("/api/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.use(errorHandler);
 
